@@ -71,7 +71,9 @@ export default function ChessBoard({
 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
-      <div className="grid grid-cols-8 gap-0 border-4 border-gray-800 rounded-lg overflow-hidden shadow-2xl">
+      <div className="grid grid-cols-8 gap-0 border-8 border-gray-900 rounded-2xl overflow-hidden shadow-2xl" style={{
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+      }}>
         {board.map((row, rowIndex) =>
           row.map((piece, colIndex) => {
             const isLight = isLightSquare(rowIndex, colIndex);
@@ -85,18 +87,18 @@ export default function ChessBoard({
                   w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20
                   flex items-center justify-center
                   text-3xl sm:text-4xl md:text-5xl
-                  transition-all duration-150
-                  ${isLight ? 'bg-amber-100' : 'bg-amber-700'}
-                  ${selected ? 'ring-4 ring-blue-500 ring-inset' : ''}
-                  hover:brightness-110
-                  active:brightness-90
+                  transition-all duration-100
+                  cursor-pointer
+                  ${isLight ? 'bg-blue-100 hover:bg-blue-200' : 'bg-blue-800 hover:bg-blue-900'}
+                  ${selected ? 'ring-4 ring-yellow-400 ring-inset shadow-inner' : ''}
+                  active:scale-95
                 `}
               >
                 {piece && (
                   <span
                     className={`
-                      ${piece === piece.toUpperCase() ? 'text-white' : 'text-black'}
-                      drop-shadow-md
+                      ${piece === piece.toUpperCase() ? 'text-white drop-shadow-lg' : 'text-gray-900 drop-shadow-md'}
+                      font-bold
                     `}
                   >
                     {PIECE_SYMBOLS[piece]}
