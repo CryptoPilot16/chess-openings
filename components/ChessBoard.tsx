@@ -10,6 +10,9 @@ const PIECE_SYMBOLS: Record<string, string> = {
   'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔',
 };
 
+const FILES = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+const RANKS = ['8', '7', '6', '5', '4', '3', '2', '1'];
+
 interface ChessBoardProps {
   board?: BoardPosition;
   selectedSquare?: [number, number] | null;
@@ -38,19 +41,16 @@ export default function ChessBoard({
 
   const handleSquareClick = (row: number, col: number) => {
     if (selectedSquare) {
-      // Attempt to move piece
       const [fromRow, fromCol] = selectedSquare;
       const from: Position = { row: fromRow, col: fromCol };
       const to: Position = { row, col };
 
       if (onMove) {
-        // Use external validation
         const isValid = onMove(from, to);
         if (isValid) {
           setInternalSelected(null);
         }
       } else {
-        // Internal mode (no validation)
         const newBoard = board.map(r => [...r]);
         newBoard[row][col] = newBoard[fromRow][fromCol];
         newBoard[fromRow][fromCol] = null;
@@ -58,7 +58,6 @@ export default function ChessBoard({
         setInternalSelected(null);
       }
     } else if (board[row][col]) {
-      // Select piece
       if (externalSelected === undefined) {
         setInternalSelected([row, col]);
       }
@@ -70,48 +69,69 @@ export default function ChessBoard({
     selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
 
   return (
-    <div className="flex flex-col items-center gap-4 p-4">
-      <div className="grid grid-cols-8 gap-0 border-8 border-gray-900 rounded-2xl overflow-hidden shadow-2xl" style={{
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-      }}>
-        {board.map((row, rowIndex) =>
-          row.map((piece, colIndex) => {
-            const isLight = isLightSquare(rowIndex, colIndex);
-            const selected = isSelected(rowIndex, colIndex);
+    <div className="flex flex-col items-center gap-8 p-6">
+      {/* Board */}
+      <div className="flex gap-2">
+        {/* Files (a-h) */}
+        <div className="flex flex-col justify-between pt-8 pr-1 text-xs font-bold text-gray-700 h-80">
+          {RANKS.map(rank => (
+            <div key={rank} className="h-10 flex items-center">{rank}</div>
+          ))}
+        </div>
 
-            return (
-              <button
-                key={`${rowIndex}-${colIndex}`}
-                onClick={() => handleSquareClick(rowIndex, colIndex)}
-                className={`
-                  w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20
-                  flex items-center justify-center
-                  text-3xl sm:text-4xl md:text-5xl
-                  transition-all duration-100
-                  cursor-pointer
-                  ${isLight ? 'bg-blue-100 hover:bg-blue-200' : 'bg-blue-800 hover:bg-blue-900'}
-                  ${selected ? 'ring-4 ring-yellow-400 ring-inset shadow-inner' : ''}
-                  active:scale-95
-                `}
-              >
-                {piece && (
-                  <span
+        {/* Board Grid */}
+        <div>
+          <div className="grid grid-cols-8 gap-0 border-4 border-gray-900 rounded-lg overflow-hidden shadow-2xl bg-gray-900">
+            {board.map((row, rowIndex) =>
+              row.map((piece, colIndex) => {
+                const isLight = isLightSquare(rowIndex, colIndex);
+                const selected = isSelected(rowIndex, colIndex);
+
+                return (
+                  <div
+                    key={`${rowIndex}-${colIndex}`}
+                    onClick={() => handleSquareClick(rowIndex, colIndex)}
                     className={`
-                      ${piece === piece.toUpperCase() ? 'text-white drop-shadow-lg' : 'text-gray-900 drop-shadow-md'}
-                      font-bold
+                      w-16 h-16
+                      flex items-center justify-center
+                      text-4xl
+                      transition-all duration-100
+                      cursor-pointer
+                      select-none
+                      relative
+                      ${isLight ? 'bg-blue-100 hover:bg-blue-200' : 'bg-blue-700 hover:bg-blue-800'}
+                      ${selected ? 'ring-4 ring-yellow-400 ring-inset' : ''}
+                      active:brightness-75
                     `}
                   >
-                    {PIECE_SYMBOLS[piece]}
-                  </span>
-                )}
-              </button>
-            );
-          })
-        )}
+                    {piece && (
+                      <span
+                        className={`
+                          font-bold
+                          ${piece === piece.toUpperCase() ? 'text-white drop-shadow-lg' : 'text-gray-900 drop-shadow-lg'}
+                        `}
+                      >
+                        {PIECE_SYMBOLS[piece]}
+                      </span>
+                    )}
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          {/* Files (a-h) */}
+          <div className="flex gap-0 mt-1 text-xs font-bold text-gray-700 pl-0">
+            {FILES.map(file => (
+              <div key={file} className="w-16 text-center">{file}</div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div className="text-sm text-gray-600 text-center">
-        {selectedSquare ? 'Click a square to move' : 'Click a piece to select'}
+      {/* Info */}
+      <div className="text-center text-sm text-gray-600">
+        <p>Click pieces to move them</p>
       </div>
     </div>
   );
