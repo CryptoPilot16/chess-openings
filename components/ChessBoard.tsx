@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Chess } from 'chess.js';
+import { useState } from 'react';
 import type { BoardPosition, Position } from '@/lib/chess-utils';
 
 type PieceType = 'p' | 'n' | 'b' | 'r' | 'q' | 'k' | 'P' | 'N' | 'B' | 'R' | 'Q' | 'K' | null;
 
-const PIECE_UNICODE: Record<string, string> = {
-  'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙',
-  'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟',
+const PIECE_SYMBOLS: Record<string, string> = {
+  'p': '♟', 'n': '♞', 'b': '♝', 'r': '♜', 'q': '♛', 'k': '♚',
+  'P': '♙', 'N': '♘', 'B': '♗', 'R': '♖', 'Q': '♕', 'K': '♔',
 };
 
 interface ChessBoardProps {
@@ -38,17 +37,21 @@ export default function ChessBoard({
   const selectedSquare = externalSelected !== undefined ? externalSelected : internalSelected;
 
   const handleSquareClick = (row: number, col: number) => {
+    console.log(`Clicked: row=${row}, col=${col}, selected=${JSON.stringify(selectedSquare)}`);
+    
     if (selectedSquare) {
       const [fromRow, fromCol] = selectedSquare;
       const from: Position = { row: fromRow, col: fromCol };
       const to: Position = { row, col };
 
+      console.log(`Attempting move from (${fromRow},${fromCol}) to (${row},${col})`);
+
       if (onMove) {
         const isValid = onMove(from, to);
+        console.log(`Move valid: ${isValid}`);
         if (isValid) {
           setInternalSelected(null);
         } else {
-          // Click a different piece
           if (board[row][col]) {
             setInternalSelected([row, col]);
           } else {
@@ -56,7 +59,6 @@ export default function ChessBoard({
           }
         }
       } else {
-        // Internal demo mode (no validation)
         const newBoard = board.map(r => [...r]);
         newBoard[row][col] = newBoard[fromRow][fromCol];
         newBoard[fromRow][fromCol] = null;
@@ -64,77 +66,61 @@ export default function ChessBoard({
         setInternalSelected(null);
       }
     } else if (board[row][col]) {
+      console.log(`Selected piece at (${row},${col}): ${board[row][col]}`);
       setInternalSelected([row, col]);
     }
   };
 
-  const isLightSquare = (row: number, col: number) => (row + col) % 2 === 1;
+  const isLightSquare = (row: number, col: number) => (row + col) % 2 === 0;
   const isSelected = (row: number, col: number) =>
     selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
 
   return (
-    <div className="w-full flex justify-center py-8">
-      <div className="inline-block">
-        {/* Board */}
-        <div className="border-8 border-gray-800 rounded-lg overflow-hidden shadow-2xl" style={{
-          width: 'fit-content'
-        }}>
-          <table cellSpacing="0" cellPadding="0" style={{ borderCollapse: 'collapse' }}>
-            <tbody>
-              {board.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {/* Rank */}
-                  <td className="w-8 h-16 bg-gray-900 flex items-center justify-center text-white text-xs font-bold">
-                    {8 - rowIndex}
-                  </td>
-                  
-                  {row.map((piece, colIndex) => {
-                    const isLight = isLightSquare(rowIndex, colIndex);
-                    const selected = isSelected(rowIndex, colIndex);
+    <div className="flex justify-center p-4">
+      <div className="border-4 border-gray-900 rounded-lg overflow-hidden shadow-2xl bg-gray-900">
+        {board.map((row, rowIndex) => (
+          <div key={rowIndex} className="flex">
+            <div className="w-8 h-16 bg-gray-900 text-white text-xs font-bold flex items-center justify-center">
+              {8 - rowIndex}
+            </div>
+            {row.map((piece, colIndex) => {
+              const isLight = isLightSquare(rowIndex, colIndex);
+              const selected = isSelected(rowIndex, colIndex);
 
-                    return (
-                      <td
-                        key={`${rowIndex}-${colIndex}`}
-                        onClick={() => handleSquareClick(rowIndex, colIndex)}
-                        style={{
-                          width: '64px',
-                          height: '64px',
-                          backgroundColor: selected 
-                            ? '#fcd34d' 
-                            : isLight 
-                              ? '#f0d9b5' 
-                              : '#baca44',
-                          cursor: 'pointer',
-                          fontSize: '48px',
-                          textAlign: 'center',
-                          lineHeight: '64px',
-                          fontWeight: 'bold',
-                          userSelect: 'none',
-                          transition: 'all 0.1s',
-                        }}
-                        className="hover:opacity-80 active:opacity-60"
-                      >
-                        {piece ? PIECE_UNICODE[piece] : ''}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-              
-              {/* Files */}
-              <tr>
-                <td className="bg-gray-900" />
-                {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(file => (
-                  <td
-                    key={file}
-                    className="w-16 h-8 bg-gray-900 text-white text-xs font-bold text-center flex items-center justify-center"
-                  >
-                    {file}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
+              return (
+                <div
+                  key={`${rowIndex}-${colIndex}`}
+                  onClick={() => handleSquareClick(rowIndex, colIndex)}
+                  className={`
+                    w-16 h-16
+                    flex items-center justify-center
+                    text-4xl
+                    cursor-pointer
+                    select-none
+                    transition-colors duration-100
+                    ${isLight ? 'bg-amber-100 hover:bg-amber-200' : 'bg-amber-700 hover:bg-amber-800'}
+                    ${selected ? 'ring-4 ring-yellow-400 ring-inset' : ''}
+                  `}
+                  style={{ userSelect: 'none' }}
+                >
+                  {piece && <span className={piece === piece.toUpperCase() ? 'text-white drop-shadow-lg' : 'text-black drop-shadow-lg'}>
+                    {PIECE_SYMBOLS[piece]}
+                  </span>}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+        <div className="flex">
+          <div className="w-8" />
+          {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(file => (
+            <div
+              key={file}
+              className="w-16 h-6 bg-gray-900 text-white text-xs font-bold flex items-center justify-center"
+            >
+              {file}
+            </div>
+          ))}
         </div>
       </div>
     </div>
