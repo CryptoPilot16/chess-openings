@@ -2,21 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  @apply bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950;
+  @apply text-slate-100;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+/* Smooth transitions */
+* {
+  @apply transition-colors duration-200;
 }
 
-.animate-shake {
-  animation: shake 0.4s ease-in-out;
+/* Cards */
+.card {
+  @apply bg-slate-800 border border-slate-700 rounded-xl shadow-xl;
+}
+
+.card-lg {
+  @apply bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl;
+}
+
+/* Buttons */
+.btn {
+  @apply px-4 py-2 rounded-lg font-semibold transition-all duration-200 cursor-pointer;
+}
+
+.btn-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl;
+}
+
+.btn-secondary {
+  @apply bg-slate-700 hover:bg-slate-600 text-slate-100;
+}
+
+/* Glass effect */
+.glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
 }

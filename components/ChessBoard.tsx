@@ -76,11 +76,11 @@ export default function ChessBoard({
     selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
 
   return (
-    <div className="flex justify-center p-4">
-      <div className="border-4 border-gray-900 rounded-lg overflow-hidden shadow-2xl bg-gray-900">
+    <div className="flex justify-center">
+      <div className="border-4 border-slate-700 rounded-xl overflow-hidden shadow-2xl bg-slate-900">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="flex">
-            <div className="w-8 h-16 bg-gray-900 text-white text-xs font-bold flex items-center justify-center">
+            <div className="w-8 h-16 bg-slate-900 text-slate-400 text-xs font-bold flex items-center justify-center">
               {8 - rowIndex}
             </div>
             {row.map((piece, colIndex) => {
@@ -97,13 +97,13 @@ export default function ChessBoard({
                     text-4xl
                     cursor-pointer
                     select-none
-                    transition-colors duration-100
-                    ${isLight ? 'bg-amber-100 hover:bg-amber-200' : 'bg-amber-700 hover:bg-amber-800'}
-                    ${selected ? 'ring-4 ring-yellow-400 ring-inset' : ''}
+                    transition-all duration-100
+                    ${isLight ? 'bg-cyan-100 hover:bg-cyan-200' : 'bg-blue-700 hover:bg-blue-800'}
+                    ${selected ? 'ring-4 ring-yellow-400 ring-inset shadow-lg shadow-yellow-400' : ''}
                   `}
                   style={{ userSelect: 'none' }}
                 >
-                  {piece && <span className={piece === piece.toUpperCase() ? 'text-white drop-shadow-lg' : 'text-black drop-shadow-lg'}>
+                  {piece && <span className={piece === piece.toUpperCase() ? 'text-white drop-shadow-lg' : 'text-gray-900 drop-shadow-lg'}>
                     {PIECE_SYMBOLS[piece]}
                   </span>}
                 </div>
@@ -116,7 +116,7 @@ export default function ChessBoard({
           {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(file => (
             <div
               key={file}
-              className="w-16 h-6 bg-gray-900 text-white text-xs font-bold flex items-center justify-center"
+              className="w-16 h-6 bg-slate-900 text-slate-400 text-xs font-bold flex items-center justify-center"
             >
               {file}
             </div>

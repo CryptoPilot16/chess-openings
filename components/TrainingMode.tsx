@@ -201,96 +201,116 @@ export default function TrainingMode({ opening, onComplete, onQuit }: TrainingMo
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
-      <div className="max-w-4xl mx-auto">
+    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 md:p-8">
+      <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">{opening.name}</h1>
-          <p className="text-gray-600">{opening.description}</p>
+        <div className="text-center mb-12">
+          <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 bg-clip-text text-transparent mb-3">
+            {opening.name}
+          </h1>
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">{opening.description}</p>
         </div>
 
-        {/* Move Info */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <div className="text-center mb-4">
-            <p className="text-sm text-gray-600">Progress</p>
-            <p className="text-2xl font-bold text-blue-600">{moveIndex} / {opening.mainLine.length} moves</p>
-          </div>
-          <div className="text-center mb-4">
-            <p className="text-sm text-gray-600">Next Move</p>
-            <p className="text-lg font-mono font-bold text-gray-900">{currentMove || 'Complete!'}</p>
-          </div>
-          {hint && (
-            <div className="bg-yellow-100 border border-yellow-400 rounded p-3 text-center text-yellow-800">
-              Hint: {hint}
+        {/* Main Container */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          {/* Left: Board */}
+          <div className="md:col-span-2">
+            <div className="card-lg p-6 flex justify-center">
+              <ChessBoard board={board} onMove={handleMove} />
             </div>
-          )}
-          {feedback && (
-            <div className={`mt-4 text-center font-bold text-lg ${
-              feedback === 'correct' ? 'text-green-600' : 'text-red-600'
-            }`}>
-              {feedback === 'correct' ? '✓ Correct!' : '✗ Incorrect'}
+          </div>
+
+          {/* Right: Info Panel */}
+          <div className="space-y-4">
+            {/* Progress */}
+            <div className="card p-6 text-center">
+              <div className="text-slate-400 text-sm uppercase tracking-wide mb-2">Progress</div>
+              <div className="text-4xl font-black bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
+                {moveIndex}/{opening.mainLine.length}
+              </div>
+              <div className="mt-3 w-full bg-slate-700 rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all"
+                  style={{ width: `${(moveIndex / opening.mainLine.length) * 100}%` }}
+                />
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Board */}
-        <div className="flex justify-center mb-8">
-          <ChessBoard
-            board={board}
-            onMove={handleMove}
-          />
-        </div>
+            {/* Current Move */}
+            <div className="card p-6 text-center">
+              <div className="text-slate-400 text-sm uppercase tracking-wide mb-3">Next Move</div>
+              <div className="text-5xl font-black font-mono text-blue-400">
+                {currentMove || '✓'}
+              </div>
+            </div>
 
-        {/* Debug Message */}
-        {debugMessage && (
-          <div className="bg-blue-100 border border-blue-400 rounded p-3 text-center text-sm text-blue-800 mb-4">
-            {debugMessage}
-          </div>
-        )}
+            {/* Feedback */}
+            {feedback && (
+              <div className={`card p-4 text-center font-bold text-lg ${
+                feedback === 'correct' ? 'bg-emerald-900/50 text-emerald-300' : 'bg-red-900/50 text-red-300'
+              }`}>
+                {feedback === 'correct' ? '✓ Correct!' : '✗ Try again'}
+              </div>
+            )}
 
-        {/* Controls */}
-        <div className="bg-white rounded-lg shadow-lg p-6 text-center space-y-4">
-          <div className="text-sm text-gray-600 space-y-1">
-            <p>Press <kbd className="bg-gray-200 px-2 py-1 rounded">H</kbd> for hint</p>
-            <p>Press <kbd className="bg-gray-200 px-2 py-1 rounded">R</kbd> to reset</p>
-            <p>Press <kbd className="bg-gray-200 px-2 py-1 rounded">Q</kbd> to quit</p>
-          </div>
-          <button
-            onClick={showHint}
-            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded"
-          >
-            💡 Hint
-          </button>
-          <button
-            onClick={resetTraining}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded ml-2"
-          >
-            🔄 Reset
-          </button>
-          <button
-            onClick={onQuit}
-            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded ml-2"
-          >
-            ❌ Quit
-          </button>
-        </div>
+            {/* Hint */}
+            {hint && (
+              <div className="card p-4 bg-amber-900/30 border-amber-600/50 text-center">
+                <div className="text-amber-400 text-sm font-bold mb-1">💡 Hint</div>
+                <div className="text-amber-200">{hint}</div>
+              </div>
+            )}
 
-        {/* Move History */}
-        <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
-          <h3 className="font-bold text-gray-900 mb-3">Move History</h3>
-          <div className="text-sm text-gray-600">
-            {moveHistory.length === 0 ? 'Make your first move...' : moveHistory.join(' ')}
+            {/* Actions */}
+            <div className="space-y-2">
+              <button
+                onClick={showHint}
+                className="w-full btn btn-primary bg-amber-600 hover:bg-amber-700"
+              >
+                💡 Hint
+              </button>
+              <button
+                onClick={resetTraining}
+                className="w-full btn btn-secondary"
+              >
+                🔄 Reset
+              </button>
+              <button
+                onClick={onQuit}
+                className="w-full btn btn-secondary text-red-400 hover:text-red-300"
+              >
+                ← Back
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Key Ideas */}
-        <div className="mt-8 bg-white rounded-lg shadow-lg p-6">
-          <h3 className="font-bold text-gray-900 mb-3">Key Ideas</h3>
-          <ul className="text-sm text-gray-600 space-y-2">
-            {opening.keyIdeas.map((idea, idx) => (
-              <li key={idx}>• {idea}</li>
-            ))}
-          </ul>
+        {/* Move History & Key Ideas */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Move History */}
+          <div className="card p-6">
+            <h3 className="text-sm font-bold uppercase tracking-wide text-slate-400 mb-3">Move History</h3>
+            <div className="text-slate-300 font-mono">
+              {moveHistory.length === 0 ? (
+                <span className="text-slate-500">Make your first move...</span>
+              ) : (
+                moveHistory.join(' ')
+              )}
+            </div>
+          </div>
+
+          {/* Key Ideas */}
+          <div className="card p-6">
+            <h3 className="text-sm font-bold uppercase tracking-wide text-slate-400 mb-3">Key Ideas</h3>
+            <ul className="text-slate-300 text-sm space-y-2">
+              {opening.keyIdeas.map((idea, idx) => (
+                <li key={idx} className="flex items-start">
+                  <span className="text-blue-400 mr-2">▸</span>
+                  <span>{idea}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </main>
