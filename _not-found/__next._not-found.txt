@@ -1,4 +1,0 @@
-1:"$Sreact.fragment"
-2:I[39756,["/chess-openings/_next/static/chunks/5e6ed5ea213bf3e0.js","/chess-openings/_next/static/chunks/d2be314c3ece3fbe.js"],"default"]
-3:I[37457,["/chess-openings/_next/static/chunks/5e6ed5ea213bf3e0.js","/chess-openings/_next/static/chunks/d2be314c3ece3fbe.js"],"default"]
-0:{"buildId":"p3BK2A_bbtNvZo6QdPz-4","rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"loading":null,"isPartial":false}
