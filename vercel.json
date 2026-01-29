@@ -1,0 +1,7 @@
+{
+  "name": "Chess Opening Trainer",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "env": {},
+  "regions": ["iad1"]
+}
