@@ -6,12 +6,12 @@ import { Opening } from '@/data/openings';
 import {
   parseAlgebraicMove,
   applyMove,
-  clickToAlgebraic,
   INITIAL_BOARD,
   type BoardPosition,
   type Move,
   type Position,
 } from '@/lib/chess-utils';
+import { clickToAlgebraic } from '@/lib/move-validation';
 import {
   getOpeningProgress,
   recordSession,
@@ -107,7 +107,7 @@ export default function TrainingMode({ opening, onComplete, onQuit }: TrainingMo
   }, [isComplete, onComplete, opening.id, opening, sessionStats]);
 
   const handleMove = (from: Position, to: Position) => {
-    const userMoveAlgebraic = clickToAlgebraic(board, from, to);
+    const userMoveAlgebraic = clickToAlgebraic(board, from.row, from.col, to.row, to.col);
     
     setDebugMessage(`Move: ${from.row},${from.col} → ${to.row},${to.col} = ${userMoveAlgebraic || 'INVALID'}`);
 
