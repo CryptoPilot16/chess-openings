@@ -56,11 +56,14 @@ export function isValidPawnMove(
   if (
     Math.abs(toCol - fromCol) === 1 &&
     toRow === fromRow + direction &&
-    board[toRow][toCol] &&
-    ((isWhite && board[toRow][toCol] === board[toRow][toCol]?.toLowerCase()) ||
-      (!isWhite && board[toRow][toCol] === board[toRow][toCol]?.toUpperCase()))
+    board[toRow][toCol]
   ) {
-    return true;
+    const targetPiece = board[toRow][toCol];
+    const isTargetWhite = targetPiece === targetPiece.toUpperCase();
+    // Capture only if opponent's piece
+    if (isWhite !== isTargetWhite) {
+      return true;
+    }
   }
 
   return false;
@@ -154,18 +157,12 @@ export function clickToAlgebraic(
 
   const pieceLower = piece.toLowerCase();
 
-  // Pawn
-  if (pieceLower === 'p') {
-    if (captured) {
-      const fromFile = String.fromCharCode('a'.charCodeAt(0) + fromCol);
-      return `${fromFile}x${toFile}${toRank}`;
-    }
-    return `${toFile}${toRank}`;
-  }
-
   // Validate piece-specific moves
   let isValid = false;
   switch (pieceLower) {
+    case 'p':
+      isValid = isValidPawnMove(board, fromRow, fromCol, toRow, toCol, isWhite);
+      break;
     case 'n':
       isValid = isValidKnightMove(fromRow, fromCol, toRow, toCol);
       break;
@@ -187,6 +184,15 @@ export function clickToAlgebraic(
   }
 
   if (!isValid) return null;
+
+  // Pawn moves
+  if (pieceLower === 'p') {
+    if (captured) {
+      const fromFile = String.fromCharCode('a'.charCodeAt(0) + fromCol);
+      return `${fromFile}x${toFile}${toRank}`;
+    }
+    return `${toFile}${toRank}`;
+  }
 
   const captureStr = captured ? 'x' : '';
   const pieceStr = piece.toUpperCase();
