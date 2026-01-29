@@ -118,7 +118,17 @@ export default function TrainingMode({ opening, onComplete, onQuit }: TrainingMo
     // Convert user's click to algebraic notation
     const userMoveAlgebraic = clickToAlgebraic(board, from, to);
 
+    console.log(`[ChessTrainer] Move attempt:`, {
+      from, to,
+      piece: board[from.row][from.col],
+      userMoveAlgebraic,
+      expectedMove: currentMove,
+      moveIndex,
+      isWhiteTurn,
+    });
+
     if (!userMoveAlgebraic) {
+      console.log('[ChessTrainer] Invalid move (no algebraic)');
       setFeedback('incorrect');
       setTimeout(() => setFeedback(null), 1000);
       return false;
@@ -127,6 +137,8 @@ export default function TrainingMode({ opening, onComplete, onQuit }: TrainingMo
     // Check if it matches the expected move
     const expectedMove = currentMove.replace(/[+#!?]/g, ''); // Remove annotations
     const userMove = userMoveAlgebraic.replace(/[+#!?]/g, '');
+
+    console.log(`[ChessTrainer] Comparing: "${userMove}" vs "${expectedMove}"`);
 
     if (userMove === expectedMove) {
       // Correct move!

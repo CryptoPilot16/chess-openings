@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Chess } from 'chess.js';
 import type { BoardPosition, Position } from '@/lib/chess-utils';
 
 type PieceType = 'p' | 'n' | 'b' | 'r' | 'q' | 'k' | 'P' | 'N' | 'B' | 'R' | 'Q' | 'K' | null;
@@ -37,8 +38,6 @@ export default function ChessBoard({
   const selectedSquare = externalSelected !== undefined ? externalSelected : internalSelected;
 
   const handleSquareClick = (row: number, col: number) => {
-    console.log(`Clicked square: ${row}, ${col}`, { selectedSquare });
-    
     if (selectedSquare) {
       const [fromRow, fromCol] = selectedSquare;
       const from: Position = { row: fromRow, col: fromCol };
@@ -46,11 +45,10 @@ export default function ChessBoard({
 
       if (onMove) {
         const isValid = onMove(from, to);
-        console.log(`Move attempt: ${fromRow},${fromCol} to ${row},${col} - Valid: ${isValid}`);
         if (isValid) {
           setInternalSelected(null);
         } else {
-          // Try selecting this new piece if it exists
+          // Click a different piece
           if (board[row][col]) {
             setInternalSelected([row, col]);
           } else {
@@ -58,6 +56,7 @@ export default function ChessBoard({
           }
         }
       } else {
+        // Internal demo mode (no validation)
         const newBoard = board.map(r => [...r]);
         newBoard[row][col] = newBoard[fromRow][fromCol];
         newBoard[fromRow][fromCol] = null;
@@ -74,21 +73,21 @@ export default function ChessBoard({
     selectedSquare && selectedSquare[0] === row && selectedSquare[1] === col;
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      {/* Board Container */}
-      <div className="bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-xl shadow-2xl">
-        {/* Board Grid */}
-        <div className="inline-block border-4 border-gray-900 rounded-lg overflow-hidden shadow-xl">
-          <table cellSpacing="0" cellPadding="0" className="border-collapse">
+    <div className="w-full flex justify-center py-8">
+      <div className="inline-block">
+        {/* Board */}
+        <div className="border-8 border-gray-800 rounded-lg overflow-hidden shadow-2xl" style={{
+          width: 'fit-content'
+        }}>
+          <table cellSpacing="0" cellPadding="0" style={{ borderCollapse: 'collapse' }}>
             <tbody>
               {board.map((row, rowIndex) => (
                 <tr key={rowIndex}>
-                  {/* Rank Labels (8-1) */}
-                  <td className="w-8 h-16 bg-gray-900 text-white text-xs font-bold flex items-center justify-center">
+                  {/* Rank */}
+                  <td className="w-8 h-16 bg-gray-900 flex items-center justify-center text-white text-xs font-bold">
                     {8 - rowIndex}
                   </td>
                   
-                  {/* Squares */}
                   {row.map((piece, colIndex) => {
                     const isLight = isLightSquare(rowIndex, colIndex);
                     const selected = isSelected(rowIndex, colIndex);
@@ -96,22 +95,24 @@ export default function ChessBoard({
                     return (
                       <td
                         key={`${rowIndex}-${colIndex}`}
-                        className={`
-                          w-16 h-16
-                          text-4xl
-                          font-bold
-                          text-center
-                          align-middle
-                          cursor-pointer
-                          select-none
-                          transition-all duration-75
-                          border-2 border-transparent
-                          ${isLight ? 'bg-cyan-100 hover:bg-cyan-200' : 'bg-blue-600 hover:bg-blue-700'}
-                          ${selected ? 'border-yellow-400 bg-yellow-300' : ''}
-                          active:brightness-75
-                        `}
                         onClick={() => handleSquareClick(rowIndex, colIndex)}
-                        style={{ userSelect: 'none' }}
+                        style={{
+                          width: '64px',
+                          height: '64px',
+                          backgroundColor: selected 
+                            ? '#fcd34d' 
+                            : isLight 
+                              ? '#f0d9b5' 
+                              : '#baca44',
+                          cursor: 'pointer',
+                          fontSize: '48px',
+                          textAlign: 'center',
+                          lineHeight: '64px',
+                          fontWeight: 'bold',
+                          userSelect: 'none',
+                          transition: 'all 0.1s',
+                        }}
+                        className="hover:opacity-80 active:opacity-60"
                       >
                         {piece ? PIECE_UNICODE[piece] : ''}
                       </td>
@@ -120,13 +121,13 @@ export default function ChessBoard({
                 </tr>
               ))}
               
-              {/* File Labels (a-h) */}
+              {/* Files */}
               <tr>
                 <td className="bg-gray-900" />
                 {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(file => (
                   <td
                     key={file}
-                    className="w-16 h-8 bg-gray-900 text-white text-xs font-bold text-center align-middle"
+                    className="w-16 h-8 bg-gray-900 text-white text-xs font-bold text-center flex items-center justify-center"
                   >
                     {file}
                   </td>
