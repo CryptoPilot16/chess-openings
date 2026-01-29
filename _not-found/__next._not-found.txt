@@ -1,4 +1,4 @@
 1:"$Sreact.fragment"
-2:I[39756,["/chess-openings/_next/static/chunks/2f236954d6a65e12.js"],"default"]
-3:I[37457,["/chess-openings/_next/static/chunks/2f236954d6a65e12.js"],"default"]
-0:{"buildId":"bB0KM9kCAxF4QgSeHHXpV","rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"loading":null,"isPartial":false}
+2:I[39756,["/chess-openings/_next/static/chunks/3eb37b8c2312cf1d.js","/chess-openings/_next/static/chunks/d2be314c3ece3fbe.js"],"default"]
+3:I[37457,["/chess-openings/_next/static/chunks/3eb37b8c2312cf1d.js","/chess-openings/_next/static/chunks/d2be314c3ece3fbe.js"],"default"]
+0:{"buildId":"uN4Y0-ys_dukobmqWH_8R","rsc":["$","$1","c",{"children":[null,["$","$L2",null,{"parallelRouterKey":"children","template":["$","$L3",null,{}]}]]}],"loading":null,"isPartial":false}
